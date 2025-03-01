@@ -6,11 +6,6 @@
 # Note that environment variables can be set in several places
 # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
 
-# container_scanning:
-#   variables:
-#     DOCKER_IMAGE: ...
-#     DOCKER_USER: ...
-#     DOCKER_PASSWORD: ...
 stages:
 - build
 - test
@@ -55,6 +50,11 @@ build_and_push:
       --tag $DOCKER_IMAGE:$VERSION \
       --tag $DOCKER_IMAGE:$DOCKER_TAG_LATEST \
       . || { echo "Docker build or push failed"; exit 1; }
+container_scanning:
+   variables:
+     DOCKER_IMAGE: "$DOCKER_REGISTRY/ivannajwan22/sdns-test/$IMAGE_NAME"
+     DOCKER_USER: $CI_REGISTRY_USER
+     DOCKER_PASSWORD: $CI_REGISTRY_PASSWORD
 sast:
   stage: test
 include:
